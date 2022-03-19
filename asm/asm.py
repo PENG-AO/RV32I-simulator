@@ -11,7 +11,7 @@ class ASM(object):
 
     def __init__(self) -> None:
         self.fileName = None
-        self.rawText = None
+        self.rawText = list()
         self.code = list()
         self.codeTag = dict()
         self.data = list()
@@ -23,16 +23,17 @@ class ASM(object):
         self.codeCounter = ASM.DEFAULT_PC
         self.dataCounter = 0
     
-    def load(self, fileName: str) -> None:
-        try:
-            codeText = open(fileName)
-            self.fileName = fileName.split('/')[-1].split('.')[0]
-            # remove all unnecessary parts like space\n\t and comments
-            self.rawText = [line.lstrip().rstrip().split('#')[0] for line in codeText]
-            # print progress
-            printProgress(1, 1, info='Loading')
-        except FileNotFoundError:
-            raise RuntimeError(f'invalid file name: {fileName}.')
+    def load(self, files: list) -> None:
+        self.fileName = files[0].split('/')[-1].split('.')[0]
+        for idx, file in enumerate(files, start=1):
+            try:
+                codeText = open(file)
+                # remove all unnecessary parts like space\n\t and comments
+                self.rawText.extend([line.lstrip().rstrip().split('#')[0] for line in codeText])
+                # print progress
+                printProgress(idx, len(files), info='Loading')
+            except FileNotFoundError:
+                raise RuntimeError(f'invalid file name: {file}.')
 
     def decode(self) -> None:
         # 3 prepend pseudo instr * 2 assumed length * 4 bytes each
@@ -122,14 +123,14 @@ class ASM(object):
 if __name__ == '__main__':
     # parse arguments
     parser = argparse.ArgumentParser(description='assembler for risc-v')
-    parser.add_argument('fileName', help='relative path to .s file needed')
+    parser.add_argument('files', nargs='+', help='relative path to .s file needed, multiple files supported')
     parser.add_argument('--tags', action='store_true', required=False, help='print out tags')
     parser.add_argument('--verbose', action='store_true', required=False, help='print out detailed information')
     args = parser.parse_args()
     # process asm code
     try:
         asm = ASM()
-        asm.load(args.fileName)
+        asm.load(args.files)
         asm.decode()
         asm.optimize()
         asm.finalize()
