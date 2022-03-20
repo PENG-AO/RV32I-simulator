@@ -6,13 +6,9 @@
 # returns
 #   a0 = address
 malloc:
-    addi sp, sp, -4
-    sw a1, 0(sp)
     slli a1, a0, 2
     mv a0, gp
     add gp, gp, a1
-    lw a1, 0(sp)
-    addi sp, sp, 4
     ret
 
 # set the nth item
