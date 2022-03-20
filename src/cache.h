@@ -56,7 +56,6 @@ typedef struct cache {
     const u32 (*write_word)(struct cache* const, const u32, const u32);
     void (*load_block)(struct cache* const, const u32, const MEM*);
     u32 (*sneak)(struct cache*, u32, u32*);
-    void (*reset)(struct cache*);
 } CACHE;
 
 void init_cache(CACHE* cache);

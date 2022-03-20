@@ -46,11 +46,6 @@ void mem_write_word(MEM* const mem, const u32 addr, const u32 val) {
     }
 }
 
-void mem_reset_stack(MEM* mem, u32 addr) {
-    for (addr &= ~3; addr < MAX_ADDR; addr += 4)
-        mem->write_word(mem, addr, 0);
-}
-
 void init_mem(MEM* mem) {
     // check index length
     if (INDEX_1_LEN + INDEX_2_LEN + INDEX_3_LEN != 24) {
@@ -62,5 +57,4 @@ void init_mem(MEM* mem) {
     // assign interfaces
     mem->read_word = mem_read_word;
     mem->write_word = mem_write_word;
-    mem->reset_stack = mem_reset_stack;
 }

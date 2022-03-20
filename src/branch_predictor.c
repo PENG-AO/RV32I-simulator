@@ -33,7 +33,7 @@ const u32 bp_get_branch_stall(BRANCH_PREDICTOR* const branch_predictor, const u3
     }
 }
 
-void bp_reset(BRANCH_PREDICTOR* branch_predictor) {
+void init_branch_predictor(BRANCH_PREDICTOR* branch_predictor) {
     #if defined(BP_2BIT)
     branch_predictor->counter = 0;
     #elif (defined(BP_BIMODAL)) || (defined(BP_GSHARE))
@@ -42,11 +42,6 @@ void bp_reset(BRANCH_PREDICTOR* branch_predictor) {
     #endif
     branch_predictor->hit_counter = 0;
     branch_predictor->miss_counter = 0;
-}
-
-void init_branch_predictor(BRANCH_PREDICTOR* branch_predictor) {
-    bp_reset(branch_predictor);
     // assign interfaces
     branch_predictor->get_branch_stall = bp_get_branch_stall;
-    branch_predictor->reset = bp_reset;
 }

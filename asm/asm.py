@@ -36,8 +36,8 @@ class ASM(object):
                 raise RuntimeError(f'invalid file name: {file}.')
 
     def decode(self) -> None:
-        # 3 prepend pseudo instr * 2 assumed length * 4 bytes each
-        self.codeCounter += 24
+        # 1 prepend pseudo instr * 2 assumed length * 4 bytes each
+        self.codeCounter += 8
         # remove empty lines and seprate tags and instructions
         for lineno, line in enumerate(self.rawText, start=1):
             # skip empty lines

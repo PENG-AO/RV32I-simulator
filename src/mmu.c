@@ -30,11 +30,6 @@ u32 mmu_sneak(MMU* mmu, u32 addr) {
     return val;
 }
 
-void mmu_reset(MMU* mmu, u32 addr) {
-    mmu->data_cache->reset(mmu->data_cache);
-    mmu->data_mem->reset_stack(mmu->data_mem, addr);
-}
-
 void init_mmu(MMU* mmu) {
     // init cache
     static CACHE data_cache;
@@ -48,5 +43,4 @@ void init_mmu(MMU* mmu) {
     mmu->read_word = mmu_read_word;
     mmu->write_word = mmu_write_word;
     mmu->sneak = mmu_sneak;
-    mmu->reset = mmu_reset;
 }

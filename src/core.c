@@ -15,14 +15,12 @@ char* stdout_buf_get_line(STDOUT_BUF* stdout_buf, u32 lineno) {
     return stdout_buf->buf[(stdout_buf->head_idx + lineno) % 16];
 }
 
-void stdout_buf_reset(STDOUT_BUF* stdout_buf) {
+void init_stdout_buf(STDOUT_BUF* stdout_buf) {
+    // init basic info
     memset(stdout_buf->buf, 0, 16 * 12 * sizeof(char));
     stdout_buf->head_idx = 0;
     stdout_buf->tail_idx = 0;
-}
-
-void init_stdout_buf(STDOUT_BUF* stdout_buf) {
-    stdout_buf_reset(stdout_buf);
+    // assign interfaces
     stdout_buf->add_int = stdout_buf_add_int;
     stdout_buf->add_new_line = stdout_buf_add_new_line;
     stdout_buf->get_line = stdout_buf_get_line;
@@ -186,7 +184,7 @@ void core_step(CORE* const core) {
             switch (core->regs[10]) {
             case 0: // exit
                 BROADCAST(STAT_EXIT);
-                break;
+                return;
             case 1: // print int
                 core->stdout_buf->add_int(core->stdout_buf, core->regs[11]);
                 break;
@@ -218,23 +216,6 @@ void core_store_word(const CORE* core, const u32 addr, const u32 val) {
     core->mmu->write_word(core->mmu, (void* const)core, addr, val);
 }
 
-void core_reset(CORE* core) {
-    // call mem reset
-    core->mmu->reset(core->mmu, core->regs[2]);
-    // reset registers
-    core->pc = DEFAULT_PC;
-    memset(core->regs, 0, 32 * sizeof(u32));
-    core->regs[2] = MAX_ADDR;
-    // reset instruction analysis
-    core->instr_counter = 0;
-    core->stall_counter = 0;
-    memset(core->instr_analysis, 0, INSTR_TYPES * sizeof(u64));
-    // reset stdout buf
-    stdout_buf_reset(core->stdout_buf);
-    // reset branch predictor
-    core->branch_predictor->reset(core->branch_predictor);
-}
-
 void init_core(CORE* core) {
     // init basic info
     core->pc = DEFAULT_PC;
@@ -246,5 +227,4 @@ void init_core(CORE* core) {
     core->load_word = core_load_word;
     core->store_word = core_store_word;
     core->step = core_step;
-    core->reset = core_reset;
 }

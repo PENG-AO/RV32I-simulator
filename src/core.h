@@ -41,7 +41,6 @@ typedef struct core {
     void (*step)(struct core* const);
     const u32 (*load_word)(const struct core*, const u32);
     void (*store_word)(const struct core*, const u32, const u32);
-    void (*reset)(struct core*);
 } CORE;
 
 void init_core(CORE* core);

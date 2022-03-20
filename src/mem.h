@@ -23,7 +23,6 @@ typedef struct mem {
     // interfaces
     const u32 (*read_word)(const struct mem*, const u32);
     void (*write_word)(struct mem* const, const u32, const u32);
-    void (*reset_stack)(struct mem*, u32);
 } MEM;
 
 void init_mem(MEM* mem);

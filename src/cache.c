@@ -165,7 +165,16 @@ u32 cache_sneak(CACHE* cache, u32 addr, u32* val) {
     }
 }
 
-void cache_reset(CACHE* cache) {
+void init_cache(CACHE* cache) {
+    // check BLOCK_SIZE and ASSOCIATIVITY
+    if (BLOCK_SIZE & 0x3) {
+        printf("cache: block size should be the multiple of 4(words).\n");
+        exit(-1);
+    } else if (ASSOCIATIVITY == 0) {
+        printf("cache: associativity (AKA way) should be at least 1.\n");
+        exit(-1);
+    }
+    // setup parameters
     cache->hit_counter = 0;
     cache->miss_counter = 0;
     cache->read_counter = 0;
@@ -177,23 +186,9 @@ void cache_reset(CACHE* cache) {
         cache->blocks[idx] = (CACHE_BLOCK*)malloc(sizeof(CACHE_BLOCK));
         memset(cache->blocks[idx], 0, sizeof(CACHE_BLOCK));
     }
-}
-
-void init_cache(CACHE* cache) {
-    // check BLOCK_SIZE and ASSOCIATIVITY
-    if (BLOCK_SIZE & 0x3) {
-        printf("cache: block size should be the multiple of 4(words).\n");
-        exit(-1);
-    } else if (ASSOCIATIVITY == 0) {
-        printf("cache: associativity (AKA way) should be at least 1.\n");
-        exit(-1);
-    }
-    // setup parameters
-    cache_reset(cache);
     // assign interfaces
     cache->read_word = cache_read_word;
     cache->write_word = cache_write_word;
     cache->sneak = cache_sneak;
     cache->load_block = cache_load_block;
-    cache->reset = cache_reset;
 }

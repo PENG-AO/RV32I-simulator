@@ -9,8 +9,8 @@ void show_help_win() {
     mvwprintw(help_win_outer, 0, 2, " Instruction ");
     wattroff(help_win_outer, COLOR_PAIR(TITLE_COLOR));
     mvwprintw(help_win_inner, 0, 0,
-        "step [n]: move on for n step, positive for forward, negative for\n\
-        backwards, default to infinity (loops util exit or exception)");
+        "step [n]: move on for n step, positive for forward,\n\
+        default to infinity (loops util exit or exception)");
     mvwprintw(help_win_inner, 2, 0,
         "auto [ms]: start auto-stepping with interval ms, e.g. 1000 for 1sec,\n\
         meanwhile every commands are functional,\n\

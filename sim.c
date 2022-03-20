@@ -33,12 +33,6 @@ void sim_run(SIM* const sim) {
                 // step forward
                 sim->core->step(sim->core);
                 --BROADCAST.decoder.info;
-            } else if (BROADCAST.decoder.info < 0) {
-                // roll back
-                s64 remains = (s64)sim->core->instr_counter + BROADCAST.decoder.info;
-                sim->core->reset(sim->core);
-                s64 steps = max(0, remains);
-                BROADCAST(STAT_STEP | ((u64)steps << STAT_SHIFT_AMOUNT));
             } else {
                 BROADCAST(STAT_HALT);
             }
