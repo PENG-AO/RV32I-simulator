@@ -30,7 +30,7 @@ class Code(object):
 class Tags(Code):
 
     def __init__(self, tokenizedCode: tuple) -> None:
-        super().__init__(tokenizedCode, )
+        super().__init__(tokenizedCode)
         self.name = tokenizedCode[0]
         self.assumedLength = 0
         self.actualLength = 0
@@ -95,9 +95,8 @@ class Lui(Code):
         return [mc]
     
     def __str__(self) -> str:
-        rd = idx2reg(reg2idx(self.rd))
         imm = imm2int(self.imm)
-        return f'{self.name} {rd}, {imm >> 12}'
+        return f'{self.name} {self.rd}, {imm >> 12}'
 
 ######################################## auipc ########################################
 
@@ -122,9 +121,7 @@ class Auipc(Code):
         return [mc]
     
     def __str__(self):
-        rd = idx2reg(reg2idx(self.rd))
-        imm = self.imm
-        return f'{self.name} {rd}, {imm}'
+        return f'{self.name} {self.rd}, {self.imm}'
 
 ######################################## jal ########################################
 
@@ -156,9 +153,7 @@ class Jal(Code):
         return [mc]
 
     def __str__(self) -> str:
-        rd = idx2reg(reg2idx(self.rd))
-        imm = self.imm
-        return f'{self.name} {rd}, {imm}'
+        return f'{self.name} {self.rd}, {self.imm}'
 
 ######################################## jalr ########################################
 
@@ -187,10 +182,7 @@ class Jalr(Code):
         return [mc]
 
     def __str__(self) -> str:
-        rd = idx2reg(reg2idx(self.rd))
-        imm = self.imm
-        rs1 = idx2reg(reg2idx(self.rs1))
-        return f'{self.name} {rd}, {imm}({rs1})'
+        return f'{self.name} {self.rd}, {self.imm}({self.rs1})'
 
 ######################################## branch ########################################
 
@@ -261,10 +253,7 @@ class Branch(Code):
         return [mc]
     
     def __str__(self) -> str:
-        rs1 = idx2reg(reg2idx(self.rs1))
-        rs2 = idx2reg(reg2idx(self.rs2))
-        imm = self.imm
-        return f'{self.name} {rs1}, {rs2}, {imm}'
+        return f'{self.name} {self.rs1}, {self.rs2}, {self.imm}'
 
 ######################################## load ########################################
 
@@ -298,10 +287,7 @@ class Load(Code):
         return [mc]
     
     def __str__(self) -> str:
-        rd = idx2reg(reg2idx(self.rd))
-        imm = self.imm
-        rs1 = idx2reg(reg2idx(self.rs1))
-        return f'{self.name} {rd}, {imm}({rs1})'
+        return f'{self.name} {self.rd}, {self.imm}({self.rs1})'
 
 ######################################## store ########################################
 
@@ -338,10 +324,7 @@ class Store(Code):
         return [mc]
     
     def __str__(self) -> str:
-        rs2 = idx2reg(reg2idx(self.rs2))
-        imm = self.imm
-        rs1 = idx2reg(reg2idx(self.rs1))
-        return f'{self.name} {rs2}, {imm}({rs1})'
+        return f'{self.name} {self.rs2}, {self.imm}({self.rs1})'
 
 ######################################## arith-i ########################################
 
@@ -399,10 +382,7 @@ class Arith_i(Code):
         return [mc]
 
     def __str__(self) -> str:
-        rd = idx2reg(reg2idx(self.rd))
-        rs1 = idx2reg(reg2idx(self.rs1))
-        imm = self.imm
-        return f'{self.name} {rd}, {rs1}, {imm}'
+        return f'{self.name} {self.rd}, {self.rs1}, {self.imm}'
 
 ######################################## arith ########################################
 
@@ -460,10 +440,7 @@ class Arith(Code):
         return [mc]
     
     def __str__(self) -> str:
-        rd = idx2reg(reg2idx(self.rd))
-        rs1 = idx2reg(reg2idx(self.rs1))
-        rs2 = idx2reg(reg2idx(self.rs2))
-        return f'{self.name} {rd}, {rs1}, {rs2}'
+        return f'{self.name} {self.rd}, {self.rs1}, {self.rs2}'
 
 ######################################## ebreak ########################################
 
