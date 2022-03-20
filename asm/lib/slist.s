@@ -175,10 +175,105 @@ slist_find_loop_end:
     # result check
     lw a0, 8(sp) # a0 = current idx
     lw t0, 12(sp) # t0 = end idx
-    blt a0, t0, slist_find_result_check_pass
+    blt a0, t0, slist_find_result_check_end
     li a0, -1
-slist_find_result_check_pass:
+slist_find_result_check_end:
     # restore stack
     lw ra, 0(sp)
     addi sp, sp, 20
+    ret
+
+# map
+# parameters
+#   a0 = address of slist
+#   a1 = function for mapping
+#   a2 = in place option (0 for false)
+# returns
+#   a0 = address of mapped slist
+slist_map:
+    # deepen stack
+    addi sp, sp, -24
+    sw ra, 0(sp)
+    sw a1, 4(sp) # store map func
+    sw a0, 8(sp) # store address of src slist
+    # prepare dst slist
+    bne a2, zero, slist_map_inplace_check_end
+    lw a0, 4(a0) # a0 = max len
+    call make_slist # a0 = addr of dst slist
+slist_map_inplace_check_end:
+    sw a0, 12(sp) # store address of dst slist
+    lw t0, 8(sp) # t0 = addr of src slist
+    lw t0, 0(t0) # t0 = len of src slist
+    sw t0, 0(a0) # set len of dst slist
+    sw zero, 16(sp) # store the current idx of loop
+    sw t0, 20(sp) # store the end idx of loop
+slist_map_loop_start:
+    lw a1, 16(sp) # a1 = current idx
+    lw t0, 20(sp) # t0 = end idx
+    bge a1, t0, slist_map_loop_end
+    lw a0, 8(sp) # a0 = addr of src slist
+    lw a0, 8(a0) # a0 = addr of src list
+    call get_nth # a0 = src[current idx]
+    lw t0, 4(sp) # t0 = map func
+    jalr t0 # a0 = func(src[current idx])
+    mv a2, a0 # a2 = func(src[current idx])
+    lw a0, 12(sp) # a0 = addr of dst slist
+    lw a0, 8(a0) # a0 = addr of dst list
+    lw a1, 16(sp) # a1 = current idx
+    call set_nth # dst[current idx] = func(src[current idx])
+    lw t0, 16(sp) # t0 = current idx
+    addi t0, t0, 1
+    sw t0, 16(sp) # update current idx
+    j slist_map_loop_start
+slist_map_loop_end:
+    lw a0, 12(sp) # a0 = addr of dst slist
+    # restore stack
+    lw ra, 0(sp)
+    addi sp, sp, 24
+    ret
+
+# filter
+# parameters
+#   a0 = address of slist
+#   a1 = function for filtering
+# returns
+#   a0 = address of filtered slist
+slist_filter:
+    # deepen stack
+    addi sp, sp, -28
+    sw ra, 0(sp)
+    sw a1, 4(sp) # store filter func
+    sw a0, 8(sp) # store address of src slist
+    # prepare dst slist
+    lw a0, 4(a0) # a0 = max len
+    call make_slist # a0 = addr of dst slist
+    sw a0, 12(sp) # store address of dst slist
+    sw zero, 16(sp) # store the current idx of loop
+    lw t0, 8(sp) # t0 = addr of src slist
+    lw t0, 0(t0) # t0 = len of src slist
+    sw t0, 20(sp) # store the end idx of loop
+slist_filter_loop_start:
+    lw a1, 16(sp) # a1 = current idx
+    lw t0, 20(sp) # t0 = end idx
+    bge a1, t0, slist_filter_loop_end
+    lw a0, 8(sp) # a0 = addr of src slist
+    lw a0, 8(a0) # a0 = addr of src list
+    call get_nth # a0 = src[current idx]
+    sw a0, 24(sp) # store src[current idx]
+    lw t0, 4(sp) # t0 = filter func
+    jalr t0 # a0 = func(src[current idx])
+    beq a0, zero, slist_filter_check_end
+    lw a0, 12(sp) # a0 = addr of dst slist
+    lw a1, 24(sp) # a1 = src[current idx]
+    call slist_append
+slist_filter_check_end:
+    lw t0, 16(sp) # t0 = current idx
+    addi t0, t0, 1
+    sw t0, 16(sp) # update current idx
+    j slist_filter_loop_start
+slist_filter_loop_end:
+    lw a0, 12(sp) # a0 = addr of dst slist
+    # restore stack
+    lw ra, 0(sp)
+    addi sp, sp, 28
     ret

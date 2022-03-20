@@ -29,19 +29,36 @@ append_loop_end:
     ecall # print bool
     ebreak
 
-    # find 6
+    # filter
     mv a0, s0 # a0 = slist
-    li a1, 6
-    call slist_find
+    la a1, is_odd
+    call slist_filter # a0 = filtered slist
+    ebreak
+    la a1, print_item
+    li a2, 1
+    call slist_map
+    ebreak
+
+    # map
+    mv a0, s0 # a0 = slist
+    la a1, calc_double
+    li a2, 1 # a2 = in place
+    call slist_map # a0 = mapped slist
+    ebreak
+
+    # remove 3
+    mv a0, s0 # a0 = slist
+    li a1, 3
+    call slist_find # a0 = index
     ebreak
     mv a1, a0 # a1 = index
     mv a0, s0 # a0 = slist
     call slist_remove
     ebreak
 
-    # remove 3
+    # remove 6
     mv a0, s0 # a0 = slist
-    li a1, 3
+    li a1, 6
     call slist_find # a0 = index
     ebreak
     mv a1, a0 # a1 = index
@@ -65,3 +82,18 @@ pop_loop_end:
 
     li a0, 0
     ecall
+
+calc_double:
+    slli a0, a0, 1
+    ret
+
+is_odd:
+    andi a0, a0, 1
+    ret
+
+print_item:
+    mv a1, a0
+    li a0, 1
+    ecall
+    mv a0, a1
+    ret
