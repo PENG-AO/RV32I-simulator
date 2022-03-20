@@ -38,6 +38,7 @@ void sim_run(SIM* const sim) {
             }
             break;
         case STAT_HALT:
+        case STAT_CAPACITY_WARNING:
             BROADCAST(sim->gui->update(sim->gui, sim->core));
             break;
         case STAT_EXIT:

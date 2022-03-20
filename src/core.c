@@ -6,6 +6,11 @@ void stdout_buf_add_int(STDOUT_BUF* stdout_buf, s32 val) {
     stdout_buf->head_idx = max((s32)stdout_buf->tail_idx - 16, 0);
 }
 
+void stdout_buf_add_bool(STDOUT_BUF* stdout_buf, u32 bool) {
+    sprintf(stdout_buf->buf[stdout_buf->tail_idx++ % 16], bool ? "True" : "False");
+    stdout_buf->head_idx = max((s32)stdout_buf->tail_idx - 16, 0);
+}
+
 void stdout_buf_add_new_line(STDOUT_BUF* stdout_buf) {
     sprintf(stdout_buf->buf[stdout_buf->tail_idx++ % 16], "\n");
     stdout_buf->head_idx = max((s32)stdout_buf->tail_idx - 16, 0);
@@ -22,6 +27,7 @@ void init_stdout_buf(STDOUT_BUF* stdout_buf) {
     stdout_buf->tail_idx = 0;
     // assign interfaces
     stdout_buf->add_int = stdout_buf_add_int;
+    stdout_buf->add_bool = stdout_buf_add_bool;
     stdout_buf->add_new_line = stdout_buf_add_new_line;
     stdout_buf->get_line = stdout_buf_get_line;
 }
@@ -182,15 +188,16 @@ void core_step(CORE* const core) {
         // ecall
         case 0:
             switch (core->regs[10]) {
-            case 0: // exit
-                BROADCAST(STAT_EXIT);
-                return;
-            case 1: // print int
-                core->stdout_buf->add_int(core->stdout_buf, core->regs[11]);
-                break;
-            case 2: // print new line
-                core->stdout_buf->add_new_line(core->stdout_buf);
-                break;
+            // exit
+            case 0: BROADCAST(STAT_EXIT); return;
+            // print int
+            case 1: core->stdout_buf->add_int(core->stdout_buf, core->regs[11]); break;
+            // print bool
+            case 2: core->stdout_buf->add_bool(core->stdout_buf, core->regs[11]); break;
+            // print new line
+            case 3: core->stdout_buf->add_new_line(core->stdout_buf); break;
+            // capacity warning
+            case 4: BROADCAST(STAT_CAPACITY_WARNING); break;
             }
             break;
         // ebreak

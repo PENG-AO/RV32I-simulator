@@ -9,7 +9,7 @@ static char* reg_name[32] = {
     "zero",
     "ra", "sp", "gp", "tp",
     "t0", "t1", "t2",
-    "fp", "s1",
+    "s0", "s1",
     "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7",
     "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9", "s10", "s11",
     "t3", "t4", "t5", "t6"
@@ -19,6 +19,7 @@ typedef struct stdout_buf {
     char buf[16][12];
     u32 head_idx, tail_idx;
     void (*add_int)(struct stdout_buf*, s32);
+    void (*add_bool)(struct stdout_buf*, u32);
     void (*add_new_line)(struct stdout_buf*);
     char* (*get_line)(struct stdout_buf*, u32);
 } STDOUT_BUF;

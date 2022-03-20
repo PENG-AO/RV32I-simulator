@@ -12,9 +12,7 @@ typedef struct command {
 } COMMAND;
 
 s8 reg2idx(char* reg) {
-    // special fp
-    if (!strcmp(reg, "gp")) return 3;
-    if (!strcmp(reg, "s0")) return 8;
+    if (!strcmp(reg, "fp")) return 8;
     // try regs
     for (s8 idx = 0; idx < 32; ++idx) {
         if (!strcmp(reg, reg_name[idx]))

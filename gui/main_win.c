@@ -21,6 +21,7 @@ void update_pc(WINDOW* outer, WINDOW* inner, GUI* gui, CORE* core) {
     case STAT_STEP: wprintw(inner, "%18s", "step"); break;
     case STAT_MEM_EXCEPTION: wprintw(inner, "%18s", "mem exception"); break;
     case STAT_INSTR_EXCEPTION: wprintw(inner, "%18s", "instr exception"); break;
+    case STAT_CAPACITY_WARNING: wprintw(inner, "%18s", "capacity warning"); break;
     default: wprintw(inner, "%18s", "quit or unknow"); break;
     }
     wattroff(inner, COLOR_PAIR(WARNING_COLOR));

@@ -67,8 +67,10 @@
 
 ## 6. Supported system call
 
-| name           | parameters        |
-| :------------- | :---------------- |
-| exit           | a0 = 0            |
-| print int      | a0 = 1, a1 = int  |
-| print new line | a0 = 2            |
+| name             | parameters        |
+| :--------------- | :---------------- |
+| exit             | a0 = 0            |
+| print int        | a0 = 1, a1 = int  |
+| print bool       | a0 = 2, a1 = bool |
+| print new line   | a0 = 3            |
+| capacity warning | a0 = 4, a1 = addr |
