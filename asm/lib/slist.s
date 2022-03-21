@@ -95,6 +95,62 @@ slist_pop_capacity_check_end:
     addi sp, sp, 4
     ret
 
+# insert to nth
+# parameters
+#   a0 = address of slist
+#   a1 = n
+#   a2 = value
+# returns
+#   nothing
+slist_insert:
+    # deepen stack
+    addi sp, sp, -20
+    sw ra, 0(sp)
+    # capacity check
+    blt a1, zero, slist_insert_capacity_check_fail
+    lw t0, 0(a0) # t0 = len
+    blt t0, a1, slist_insert_capacity_check_fail
+    lw t1, 4(a0) # t1 = max len
+    bge t0, t1, slist_insert_capacity_check_fail
+    addi t1, t0, 1 # t1 = t0 + 1
+    sw t1, 0(a0) # update len
+    lw a0, 8(a0) # a0 = addr of list
+    sw a0, 4(sp) # store addr of list
+    sw a2, 8(sp) # store the saving value
+    sw t0, 12(sp) # store the current index of loop
+    sw a1, 16(sp) # store the end index of loop (AKA n)
+slist_insert_transfer_loop_start:
+    lw a1, 12(sp) # a1 = current idx
+    lw t0, 16(sp) # t0 = end idx
+    bge t0, a1, slist_insert_transfer_lopo_end # idx <= end
+    lw a0, 4(sp) # a0 = addr of list
+    addi a1, a1, -1
+    call get_nth # a0 = [current idx - 1]
+    mv a2, a0 # a2 = [current idx - 1]
+    lw a0, 4(sp) # a0 = addr of list
+    lw a1, 12(sp) # a1 = current idx
+    call set_nth # [current idx] = [current idx - 1]
+    lw t0, 12(sp) # t0 = current idx
+    addi t0, t0, -1
+    sw t0, 12(sp) # update current idx
+    j slist_insert_transfer_loop_start
+slist_insert_transfer_lopo_end:
+    lw a0, 4(sp) # a0 = addr of list
+    lw a1, 16(sp) # a1 = n
+    lw a2, 8(sp) # a2 = the saving value
+    call set_nth
+    j slist_insert_capacity_check_end
+slist_insert_capacity_check_fail:
+    # raise capacity warning
+    mv a1, a0
+    li a0, 4
+    ecall
+slist_insert_capacity_check_end:
+    # restore stack
+    lw ra, 0(sp)
+    addi sp, sp, 20
+    ret
+
 # remove the nth item
 # parameters
 #   a0 = address of slist

@@ -34,6 +34,17 @@ append_loop_end:
     la a1, is_odd
     call slist_filter # a0 = filtered slist
     ebreak
+    mv s1, a0
+    li a1, 0
+    li a2, 2
+    call slist_insert
+    ebreak
+    mv a0, s1
+    lw a1, 0(a0)
+    li a2, 4
+    call slist_insert
+    ebreak
+    mv a0, s1
     la a1, print_item
     li a2, 1
     call slist_map
