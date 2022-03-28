@@ -1,6 +1,6 @@
 # a library for sequential list
 
-# make list
+# make slist
 # parameters
 #   a0 = length(in words)
 # returns
@@ -83,7 +83,7 @@ slist_pop:
     addi sp, sp, -4
     sw ra, 0(sp)
     # capacity check
-    lw a1, 0(a0) # t0 = len
+    lw a1, 0(a0) # a1 = len
     beq a1, zero, slist_pop_capacity_check_end
     addi a1, a1, -1
     sw a1, 0(a0) # update len
@@ -122,7 +122,7 @@ slist_insert:
 slist_insert_transfer_loop_start:
     lw a1, 12(sp) # a1 = current idx
     lw t0, 16(sp) # t0 = end idx
-    bge t0, a1, slist_insert_transfer_lopo_end # idx <= end
+    bge t0, a1, slist_insert_transfer_loop_end # idx <= end
     lw a0, 4(sp) # a0 = addr of list
     addi a1, a1, -1
     call get_nth # a0 = [current idx - 1]
@@ -134,7 +134,7 @@ slist_insert_transfer_loop_start:
     addi t0, t0, -1
     sw t0, 12(sp) # update current idx
     j slist_insert_transfer_loop_start
-slist_insert_transfer_lopo_end:
+slist_insert_transfer_loop_end:
     lw a0, 4(sp) # a0 = addr of list
     lw a1, 16(sp) # a1 = n
     lw a2, 8(sp) # a2 = the saving value
